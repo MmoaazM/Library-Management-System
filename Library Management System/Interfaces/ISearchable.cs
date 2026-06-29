@@ -4,7 +4,8 @@ using System.Text;
 
 namespace Library_Management_System.Interfaces
 {
-    internal interface ISearchable
+    public interface ISearchable
     {
+        bool matchesQuery(string query);
     }
 }
