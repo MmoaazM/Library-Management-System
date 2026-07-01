@@ -5,14 +5,14 @@ using Library_Management_System.Interfaces;
 
 namespace Library_Management_System.models
 {
-    internal class Book : LibraryItem , ISearchable
+    public class Book : LibraryItem , ISearchable
     {
-        public string author { get;}
-        public int year { get;}
+        public string author { get; init; }
+        public int year { get; init; }
 
-        public char genre { get;}
+        public char genre { get; init; }
 
-        public bool isAvailable { get;}
+        public bool isAvailable { get; init; }
         public bool matchesQuery(string query)
         {
             return true;
