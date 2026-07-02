@@ -6,11 +6,11 @@ namespace Library_Management_System.models
 {
     public record BorrowRecord
     {
-        int ID { get; }
-        Book BorrowedBook { get; }
-        Member Borrower { get; }
-        DateTime BorrowDate { get; }
-        DateTime ReturnDate { get; init; }
+        public int ID { get; }
+        public Book BorrowedBook { get; }
+        public Member Borrower { get; }
+        public DateTime BorrowDate { get; }
+        public DateTime ? ReturnDate { get; init; }
 
         public BorrowRecord(int ID,Book BorrowedBook, Member Borrower, DateTime BorrowDate)
         {
@@ -23,7 +23,7 @@ namespace Library_Management_System.models
 
         public bool IsLate()
         {
-            return (DateTime.Now - BorrowDate).TotalDays > 14;
+            return (DateTime.Now - BorrowDate).TotalDays > Borrower.LoanDays;
         }
     }
 }

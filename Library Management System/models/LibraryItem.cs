@@ -9,7 +9,7 @@ namespace Library_Management_System.models
         protected int ID { get; init; }
         protected string title { get; init; }
 
-        protected DateTime addedDate { get; init; }
+        protected DateTime AddedDate { get; init; }
 
         protected abstract List<KeyValuePair<string,string>> getInfo();
 

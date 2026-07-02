@@ -5,13 +5,16 @@ using Library_Management_System.Interfaces;
 
 namespace Library_Management_System.models
 {
-    public class Member:ISearchable
+    public abstract class Member:ISearchable
     {
-        protected int ID { get;}
-        protected string Name { get;}
-        protected string Email { get;}
-        protected DateTime JoinDate { get;}
-        protected Book[] BorrowedBooks ; 
+        public int ID { get;}
+        public string Name { get;}
+        public string Email { get;}
+        public DateTime JoinDate { get;}
+        public List<Book>BorrowedBooks ;
+
+        public abstract int MaxBorrowLimit { get; }
+        public abstract int LoanDays{ get; }
 
         public Member(int ID,string Name,string Email,DateTime JoinDate)
         {
@@ -19,7 +22,7 @@ namespace Library_Management_System.models
             this.Name = Name;
             this.Email = Email;
             this.JoinDate = JoinDate;
-            BorrowedBooks = Array.Empty<Book>();
+            BorrowedBooks = new List<Book>();
         }
 
         public bool matchesQuery(string query)

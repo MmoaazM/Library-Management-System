@@ -6,12 +6,9 @@ namespace Library_Management_System.models
 {
     public class PremiumMember : Member
     {
-        public int MaxBorrowLimit { get; }
-        public int LoanDays { get; }
-        public PremiumMember(int ID,string Name,string Email,DateTime JoinDate, int MaxBorrowLimit, int LoanDays) :base(ID, Name, Email, JoinDate)
-        {
-            this.MaxBorrowLimit = MaxBorrowLimit;
-            this.LoanDays = LoanDays;
-        }   
+        public override int MaxBorrowLimit => 10;
+        public override int LoanDays => 30;
+
+        public PremiumMember(int ID, string Name, string Email, DateTime JoinDate) : base(ID, Name, Email, JoinDate) { }
     }
 }
