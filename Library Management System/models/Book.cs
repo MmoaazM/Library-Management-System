@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 using Library_Management_System.Interfaces;
 
 namespace Library_Management_System.models
@@ -18,9 +19,16 @@ namespace Library_Management_System.models
             return true;
         }
 
-        protected override List<KeyValuePair<string,string>>getInfo()
+        protected override List<KeyValuePair<string,string>>getInfo() //use reflection here
         {
-            return null;
+            var members = new List<KeyValuePair<string, string>>();
+            
+            foreach(var prop in this.GetType().GetProperties(BindingFlags.Public|BindingFlags.Instance))
+            {
+                object value = prop.GetValue(this);
+                members.Add(new KeyValuePair<string, string>(prop.Name, value?.ToString() ?? "null"));
+            }
+            return members;
         }
 
         
