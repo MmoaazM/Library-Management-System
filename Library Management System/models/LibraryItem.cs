@@ -6,12 +6,12 @@ namespace Library_Management_System.models
 {
     public abstract class LibraryItem
     {
-        protected int ID { get; init; }
-        protected string title { get; init; }
-
-        protected DateTime AddedDate { get; init; }
-
-        protected abstract List<KeyValuePair<string,string>> getInfo();
+        public int ID { get; init; }
+        public string title { get; init; }
+        
+        public DateTime AddedDate { get; init; }
+        
+        public abstract List<KeyValuePair<string,string>> getInfo();
 
         
     }

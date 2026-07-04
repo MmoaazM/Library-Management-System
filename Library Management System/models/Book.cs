@@ -19,7 +19,7 @@ namespace Library_Management_System.models
             return true;
         }
 
-        protected override List<KeyValuePair<string,string>>getInfo() //use reflection here
+        public override List<KeyValuePair<string,string>>getInfo() //use reflection here
         {
             var members = new List<KeyValuePair<string, string>>();
             
