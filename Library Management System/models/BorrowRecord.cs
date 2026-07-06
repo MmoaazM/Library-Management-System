@@ -10,7 +10,7 @@ namespace Library_Management_System.models
         public Book BorrowedBook { get; }
         public Member Borrower { get; }
         public DateTime BorrowDate { get; }
-        public DateTime ? ReturnDate { get; init; }
+        public DateTime ? ReturnDate { get; set; }
 
         public BorrowRecord(int ID,Book BorrowedBook, Member Borrower, DateTime BorrowDate)
         {

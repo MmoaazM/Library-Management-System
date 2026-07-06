@@ -9,16 +9,20 @@ namespace Library_Management_System.Services
     {
         private List<Member> members;
         private List<Book> books;
+        private List<BorrowRecord> records;
         private void Header(string title)
         {
             Console.WriteLine("===================================================");
             Console.WriteLine($"\t\t{title}");
             Console.WriteLine("===================================================");
         }
-
-
         public void LoadMockData()
         {
+            members = new List<Member>();
+            books = new List<Book>();
+            records = new List<BorrowRecord>();
+
+
             members.Add(new RegularMember(1, "Moaaz", "Moaaz@gmail.com",new DateTime(2026,9,3)));
             members.Add(new RegularMember(2, "Mohammed", "Mohamed@gmail.com",new DateTime(2019,7,26)));
             members.Add(new RegularMember(3, "ALi", "Ali@gmail.com",new DateTime(2025,1,17)));
@@ -34,6 +38,7 @@ namespace Library_Management_System.Services
             books.Add(new Book { ID = 7, title = "What IF ?", AddedDate = new DateTime(2020, 3, 15), author="Pip armenser",year=2015,genre='M',isAvailable=true});
             books.Add(new Book { ID = 8, title = "World War II", AddedDate = new DateTime(2016, 4, 15), author="Josiph Jonson",year=2015,genre='M',isAvailable=true});
         }
+
 
         public void AddBook()
         {
@@ -61,6 +66,8 @@ namespace Library_Management_System.Services
 
 
             books.Add(newBook);
+
+            Console.WriteLine("The Book Has been added successfully");
 
         }
 
@@ -95,6 +102,46 @@ namespace Library_Management_System.Services
                
             members.Add(newMember);
         }
+
+        public void BorrowBook(int memberId,int bookId)
+        {
+            Book ?chosedBook = books.FirstOrDefault(b => b.ID == bookId);
+            Member? chosenMember = members.FirstOrDefault(m => m.ID == memberId);
+
+            if (chosedBook == null) throw new Exception("There is no Book with this ID");
+            if (chosenMember == null) throw new Exception("There is no Member with this ID");
+
+            if (!chosedBook.isAvailable) throw new Exception("The Book isn't available now ");
+
+            chosenMember.BorrowedBooks.Add(chosedBook);
+            chosedBook.isAvailable = false;
+
+            BorrowRecord newRecord = new BorrowRecord(records.Count+1, chosedBook, chosenMember, DateTime.Now);
+            records.Add(newRecord);
+
+            Console.WriteLine("The Member Borrowed his book successfully");
+        }
+
+        public void ReturnBook(int bookId)
+        {
+            Book? chosenBook = books.FirstOrDefault(b => b.ID == bookId);
+            if (chosenBook == null) throw new Exception("There is no Book with this ID");
+            if (chosenBook.isAvailable) throw new Exception("The Book is Available already");
+
+
+            BorrowRecord ?theRecord = records.FirstOrDefault(r => r.BorrowedBook.ID == bookId);
+
+            theRecord.ReturnDate = DateTime.Now;
+            chosenBook.isAvailable = true;
+            
+            Member theBorrower = members.FirstOrDefault(member => member.BorrowedBooks.FirstOrDefault(book => book.ID == chosenBook.ID) != null);
+            theBorrower.BorrowedBooks.RemoveAll(b => b.ID == bookId);
+
+
+            Console.WriteLine("The Book Has Been Returned Successfully");
+        }
+
+        
 
 
     }
