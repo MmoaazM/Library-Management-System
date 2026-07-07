@@ -182,6 +182,8 @@ namespace Library_Management_System.Services
                     if(!(record.ReturnDate is null))
                     {
                         Console.WriteLine($"Return date : {record.ReturnDate}");
+                        if (record.IsLate())
+                            Console.WriteLine("This Book's Borrow Period exceeded the legal time  !!");
                         continue;
                     }
                     Console.WriteLine("The Book Hasn't been returned yet");
