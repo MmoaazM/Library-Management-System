@@ -141,6 +141,29 @@ namespace Library_Management_System.Services
             Console.WriteLine("The Book Has Been Returned Successfully");
         }
 
+        public void ViewAvailableBooks()
+        {
+            Header("Viewing Available Books");
+            bool thereisAvailable = false;
+
+            foreach(Book book in books)
+            {
+                if (book.isAvailable)
+                {
+                    thereisAvailable = true;
+
+                    var info = book.getInfo();
+                    Console.WriteLine("\t\t -- Available Books Info");
+                    foreach(var pair in info)
+                    {
+                        Console.WriteLine($"{pair.Key} : {pair.Value}");
+                    }
+                }
+            }
+            if (!thereisAvailable)
+                Console.WriteLine("There aren't available books");
+        }
+
         
 
 
