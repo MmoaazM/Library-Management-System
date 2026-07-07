@@ -164,6 +164,31 @@ namespace Library_Management_System.Services
                 Console.WriteLine("There aren't available books");
         }
 
+        public void BorrowHistoryForUser()
+        {
+            int userId;
+            Console.Write("Enter the User ID you want : ");
+            userId = int.Parse(Console.ReadLine());
+                
+            Header($"Borrow History for User ID {userId}");
+
+            foreach(var record in records)
+            {
+                if(record.Borrower.ID==userId)
+                {
+                    Console.WriteLine($"Book Title : {record.BorrowedBook.title}");
+                    Console.WriteLine($"Borrow date : {record.BorrowDate}");
+                    
+                    if(!(record.ReturnDate is null))
+                    {
+                        Console.WriteLine($"Return date : {record.ReturnDate}");
+                        continue;
+                    }
+                    Console.WriteLine("The Book Hasn't been returned yet");
+                }
+            }
+        }
+
         
 
 
