@@ -24,8 +24,8 @@ namespace Library_Management_System.Services
             records = new List<BorrowRecord>();
 
 
-            members.Add(new RegularMember(1, "Moaaz", "Moaaz@gmail.com",new DateTime(2026,9,3)));
-            members.Add(new RegularMember(2, "Mohammed", "Mohamed@gmail.com",new DateTime(2019,7,26)));
+            members.Add(new PremiumMember(1, "Moaaz", "Moaaz@gmail.com",new DateTime(2026,9,3)));
+            members.Add(new PremiumMember(2, "Mohammed", "Mohamed@gmail.com",new DateTime(2019,7,26)));
             members.Add(new RegularMember(3, "ALi", "Ali@gmail.com",new DateTime(2025,1,17)));
             members.Add(new RegularMember(4, "Zyad", "Zyad@gmail.com",new DateTime(2021,5,29)));
             members.Add(new RegularMember(5, "Ibrahim", "Ibrahim@gmail.com",new DateTime(2024,11,9)));
@@ -149,7 +149,18 @@ namespace Library_Management_System.Services
 
             if (!chosedBook.isAvailable)
             {
+                if (chosenMember.BorrowedBooks.FirstOrDefault(chosedBook) != null)
+                { 
+                    Console.WriteLine("You Already borrowed this book");
+                    return;
+                }
+
                 Console.WriteLine("The Book isn't available now");
+                return;
+            }
+            if(chosenMember.MaxBorrowLimit==chosenMember.BorrowedBooks.Count)
+            {
+                Console.WriteLine("[ failed ]This Member Reached His Max Limit Borrow");
                 return;
             }
 
