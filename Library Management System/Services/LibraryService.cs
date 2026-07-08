@@ -38,6 +38,8 @@ namespace Library_Management_System.Services
             books.Add(new Book { ID = 6, title = "The Titans", AddedDate = new DateTime(2022, 1, 15), author="Nelson",year=2015,genre='M',isAvailable=true});
             books.Add(new Book { ID = 7, title = "What IF ?", AddedDate = new DateTime(2020, 3, 15), author="Pip armenser",year=2015,genre='M',isAvailable=true});
             books.Add(new Book { ID = 8, title = "World War II", AddedDate = new DateTime(2016, 4, 15), author="Josiph Jonson",year=2015,genre='M',isAvailable=true});
+
+            records.Add(new BorrowRecord(1, new Book { ID = 8, title = "World War II", AddedDate = new DateTime(2016, 4, 15), author = "Josiph Jonson", year = 2015, genre = 'M', isAvailable = true }, new PremiumMember(1, "Moaaz", "Moaaz@gmail.com", new DateTime(2026, 9, 3)), new DateTime(2025, 5, 15))); // mock late report (sorry for put instance with constructor calling)
         }
         public int ShowMainMenu()
         {
