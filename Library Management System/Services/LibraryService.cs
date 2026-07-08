@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text;
 using Library_Management_System.models;
 
@@ -37,6 +38,32 @@ namespace Library_Management_System.Services
             books.Add(new Book { ID = 6, title = "The Titans", AddedDate = new DateTime(2022, 1, 15), author="Nelson",year=2015,genre='M',isAvailable=true});
             books.Add(new Book { ID = 7, title = "What IF ?", AddedDate = new DateTime(2020, 3, 15), author="Pip armenser",year=2015,genre='M',isAvailable=true});
             books.Add(new Book { ID = 8, title = "World War II", AddedDate = new DateTime(2016, 4, 15), author="Josiph Jonson",year=2015,genre='M',isAvailable=true});
+        }
+        public int ShowMainMenu()
+        {
+            Console.WriteLine("======================================================");
+            Console.WriteLine("\tWelcome To Library Management System");
+            Console.WriteLine("======================================================\n");
+
+            Console.WriteLine("[ 1 ] Register a Member");
+            Console.WriteLine("[ 2 ] Search The Catalog");
+            Console.WriteLine("[ 3 ] View Available Books");
+            Console.WriteLine("[ 4 ] Member Borrowing History");
+            Console.WriteLine("[ 5 ] Late Return Report");
+            Console.WriteLine("[ 6 ] Add A Book");
+            Console.WriteLine("[ 7 ] Borrow A Book");
+            Console.WriteLine("[ 8 ] Return A Book");
+
+            Console.Write("Enter Your Choice -> ");
+
+            if (!(int.TryParse(Console.ReadLine(), out int choice)))
+            {
+                Console.WriteLine("You Entered Invalid Input");
+                return 0;
+            }
+
+            return choice;
+
         }
 
 
@@ -82,10 +109,11 @@ namespace Library_Management_System.Services
             string email = Console.ReadLine();
 
             Console.Write("Premium ? [ Y ] - [ N ]");
+            string memberType = Console.ReadLine();
 
 
             Member newMember;
-            if (Console.Read()=='Y')
+            if (memberType == "Y")
             {
                  newMember = new PremiumMember(members.Count+1, name, email, DateTime.Now);
             }
@@ -108,10 +136,22 @@ namespace Library_Management_System.Services
             Book ?chosedBook = books.FirstOrDefault(b => b.ID == bookId);
             Member? chosenMember = members.FirstOrDefault(m => m.ID == memberId);
 
-            if (chosedBook == null) throw new Exception("There is no Book with this ID");
-            if (chosenMember == null) throw new Exception("There is no Member with this ID");
+            if (chosedBook == null)
+            {
+                Console.WriteLine("There is no Book with this ID");
+                return;
+            }
+            if (chosenMember == null)
+            {
+                Console.WriteLine("There is no Member with this ID");
+                return;
+            }
 
-            if (!chosedBook.isAvailable) throw new Exception("The Book isn't available now ");
+            if (!chosedBook.isAvailable)
+            {
+                Console.WriteLine("The Book isn't available now");
+                return;
+            }
 
             chosenMember.BorrowedBooks.Add(chosedBook);
             chosedBook.isAvailable = false;
@@ -125,16 +165,23 @@ namespace Library_Management_System.Services
         public void ReturnBook(int bookId)
         {
             Book? chosenBook = books.FirstOrDefault(b => b.ID == bookId);
-            if (chosenBook == null) throw new Exception("There is no Book with this ID");
-            if (chosenBook.isAvailable) throw new Exception("The Book is Available already");
+            if (chosenBook == null)
+            {
+                Console.WriteLine("There is no Book with this ID");
+                return;
+            }
+            if (chosenBook.isAvailable)
+            {
+                Console.WriteLine("The Book is Available already");
+                return;
+            }
 
-
-            BorrowRecord ?theRecord = records.FirstOrDefault(r => r.BorrowedBook.ID == bookId);
+            BorrowRecord? theRecord = records.FirstOrDefault(r => r.BorrowedBook.ID == bookId);
 
             theRecord.ReturnDate = DateTime.Now;
             chosenBook.isAvailable = true;
             
-            Member theBorrower = members.FirstOrDefault(member => member.BorrowedBooks.FirstOrDefault(book => book.ID == chosenBook.ID) != null);
+            Member theBorrower = theRecord.Borrower;
             theBorrower.BorrowedBooks.RemoveAll(b => b.ID == bookId);
 
 
@@ -144,6 +191,7 @@ namespace Library_Management_System.Services
         public void ViewAvailableBooks()
         {
             Header("Viewing Available Books");
+            Console.WriteLine("\t\t -- Available Books Info\n");
             bool thereisAvailable = false;
 
             foreach(Book book in books)
@@ -153,11 +201,12 @@ namespace Library_Management_System.Services
                     thereisAvailable = true;
 
                     var info = book.getInfo();
-                    Console.WriteLine("\t\t -- Available Books Info");
+                    
                     foreach(var pair in info)
                     {
                         Console.WriteLine($"{pair.Key} : {pair.Value}");
                     }
+                    Console.WriteLine("\n\t---------\n");
                 }
             }
             if (!thereisAvailable)
@@ -169,13 +218,21 @@ namespace Library_Management_System.Services
             int userId;
             Console.Write("Enter the User ID you want : ");
             userId = int.Parse(Console.ReadLine());
+
+            if(userId<0 || userId>members.Count-1)
+            {
+                Console.WriteLine($"\n[ failed ] There is no user with this id {userId}\n");
+                return;
+            }
                 
             Header($"Borrow History for User ID {userId}");
 
-            foreach(var record in records)
+            bool thereIsRecords = false;
+            foreach (var record in records)
             {
                 if(record.Borrower.ID==userId)
                 {
+                    thereIsRecords = true;
                     Console.WriteLine($"Book Title : {record.BorrowedBook.title}");
                     Console.WriteLine($"Borrow date : {record.BorrowDate}");
                     
@@ -189,10 +246,77 @@ namespace Library_Management_System.Services
                     Console.WriteLine("The Book Hasn't been returned yet");
                 }
             }
+            if(!thereIsRecords)
+            {
+                Console.WriteLine("No Borrows For This User");
+            }
         }
 
-        
+        public void LateReturnReport()
+        {
+            Header("Late Return Books Report");
+            bool exist = false;
+            foreach(var record in records)
+            {
+                if(record.ReturnDate is null && record.IsLate())
+                {
+                    exist = true;
+                    Console.WriteLine($"Member Name : {record.Borrower.Name}");
+                    Console.WriteLine($"Book : {record.BorrowedBook.title}");
+                    Console.WriteLine($"Borrow Date : {record.BorrowDate}");
+                    Console.WriteLine($"The Return date is late with {(DateTime.Now-record.BorrowDate).TotalDays-record.Borrower.LoanDays} days");
+                }
+            }
+            if(!exist)
+            {
+                Console.WriteLine("[ Legal ] : all books borrow period are legal");
+            }
+        }
 
+        public void SearchTheCatalog(string query)
+        {
+            Header("Search the Catalog");
 
+            bool exist = false;
+            foreach(Book book in books)
+            {
+                if(book.matchesQuery(query))
+                {
+                    exist = true;
+                    Console.WriteLine("Matched Book Info ");
+                    var list = book.getInfo();
+
+                    foreach(var pair in list)
+                    {
+                        Console.WriteLine($"{pair.Key} : {pair.Value}");
+                    }
+                }
+            }
+            if(!exist)
+            {
+                Console.WriteLine("No Books with this title");
+            }
+
+            exist = false;
+
+            foreach(Member member in members)
+            {
+                if(member.matchesQuery(query))
+                {
+                    exist = true;
+                    Console.WriteLine("Matched Member Info ");
+                    var list = member.GetInfo();
+
+                    foreach(var pair in list)
+                    {
+                        Console.WriteLine($"{pair.Key} : {pair.Value}");
+                    }
+                }
+            }
+            if (!exist)
+            {
+                Console.WriteLine("No Members with this title");
+            }
+        }
     }
 }
