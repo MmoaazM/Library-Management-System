@@ -12,7 +12,7 @@ namespace Library_Management_System.models
         public string Name { get;}
         public string Email { get;}
         public DateTime JoinDate { get;}
-        public List<Book>BorrowedBooks ;
+        public List<Book> BorrowedBooks { get; }
 
         public abstract int MaxBorrowLimit { get; }
         public abstract int LoanDays{ get; }
@@ -49,7 +49,7 @@ namespace Library_Management_System.models
 
         public bool matchesQuery(string query)
         {
-            return true;
+            return String.Equals(query, this.Name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

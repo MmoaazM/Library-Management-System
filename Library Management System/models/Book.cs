@@ -16,7 +16,7 @@ namespace Library_Management_System.models
         public bool isAvailable { get; set; }
         public bool matchesQuery(string query)
         {
-            return query==title;
+            return String.Equals(query,this.title,StringComparison.OrdinalIgnoreCase);
         }
 
         public override List<KeyValuePair<string,string>>getInfo() //use reflection here
